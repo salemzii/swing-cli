@@ -2,7 +2,10 @@ module github.com/salemzii/swing-cli
 
 go 1.18
 
-require github.com/spf13/cobra v1.6.1
+require (
+	github.com/spf13/cobra v1.6.1
+	github.com/ybbus/jsonrpc/v3 v3.1.1
+)
 
 require (
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect

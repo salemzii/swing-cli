@@ -1,6 +1,9 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/salemzii/swing-cli/service"
+	"github.com/spf13/cobra"
+)
 
 func init() {
 
@@ -25,8 +28,9 @@ var (
 		Use:   "all",
 		Short: "fetch all log records",
 		Long:  `all command allows you to fetch all your log records`,
+		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			// service.GetAllRecords()
+			service.GetAllRecords(args[0])
 		},
 	}
 
