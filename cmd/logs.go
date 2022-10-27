@@ -4,6 +4,7 @@ import "github.com/spf13/cobra"
 
 func init() {
 
+	logsCmd.AddCommand(all, line, lastXmin, last15Min, level, function)
 	logsCmd.PersistentFlags().Bool("json", false, "Author name for copyright attribution")
 
 }
