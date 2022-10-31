@@ -1,6 +1,9 @@
 package cmd
 
 import (
+	"log"
+	"strconv"
+
 	"github.com/salemzii/swing-cli/service"
 	"github.com/spf13/cobra"
 )
@@ -38,9 +41,13 @@ var (
 		Use:   "line",
 		Short: "fetch all log records with a particular line number",
 		Long:  `the line command allows you fetch all log records containing the specified line number`,
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
-			// service.GetRecordsWithLineNum(args[0])
+			lineNum, err := strconv.Atoi(args[1])
+			if err != nil {
+				log.Fatalf("Error retrieving line number %v", err)
+			}
+			service.GetRecordsWithLineNum(args[0], lineNum)
 		},
 	}
 
@@ -48,9 +55,10 @@ var (
 		Use:   "function",
 		Short: "fetch all log records with a particular function name",
 		Long:  "the function command allows you fetch all log records containing the specified function name",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
-			// service.GetRecordsWithLineNum(args[0])
+
+			service.GetRecordsWithFunction(args[0], args[1])
 		},
 	}
 
@@ -58,9 +66,9 @@ var (
 		Use:   "level",
 		Short: "fetch all log records with a particular log level",
 		Long:  "the level command allows you fetch all log records containing the specified log level",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
-			// service.GetRecordsWithLogLevel(args[0])
+			service.GetRecordsWithLogLevel(args[0], args[1])
 		},
 	}
 
@@ -68,8 +76,9 @@ var (
 		Use:   "last15",
 		Short: "fetch all log records created within 15 minutes",
 		Long:  "the last15 command allows you fetch all log records that were ingested within the last 15 minutes",
+		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			// service.GetRecordsLast15()
+			service.GetRecordsLast15(args[0])
 		},
 	}
 
@@ -77,8 +86,13 @@ var (
 		Use:   "lastx",
 		Short: "fetch all log records created within X minutes",
 		Long:  "the lastx command allows you fetch all log records that were ingested within the last x minutes",
+		Args:  cobra.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
-			// service.GetRecordsLastX()
+			lineNum, err := strconv.Atoi(args[1])
+			if err != nil {
+				log.Fatalf("Error retrieving line number %v", err)
+			}
+			service.GetRecordsLastX(args[0], lineNum)
 		},
 	}
 )

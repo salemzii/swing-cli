@@ -21,3 +21,20 @@ type AllRecordStruct struct {
 	Tokenid string `json:"token"`
 	Limit   int    `json:"limit"`
 }
+type RecordLineNum struct {
+	Tokenid string `json:"token"`
+	Limit   int    `json:"limit"`
+	Line    int    `json:"line"`
+}
+type RecordFunction struct {
+	Tokenid  string `json:"token"`
+	Function string `json:"function"`
+}
+type RecordLevel struct {
+	Tokenid string `json:"token"`
+	Level   string `json:"level"`
+}
+type XRecords struct {
+	Tokenid string `json:"token"`
+	Minutes int    `json:"minutes"`
+}
