@@ -23,9 +23,7 @@ func allRecords(token string) {
 	if err != nil || len(records) < 1 {
 		log.Fatal(err)
 	}
-	for k, v := range records {
-		log.Printf("Record %d, \n Level: %s, \n FunctionName: %s, \n Stacktrace: %s", k+1, v.Level, v.Function, v.StackTrace)
-	}
+	consoleLogs(records)
 }
 
 func GetRecordsWithLineNum(token string, line int) {
@@ -122,3 +120,44 @@ func GetRecordsLastX(token string, minutes int) {
 		log.Printf("Record %d, \n Level: %s, \n FunctionName: %s, \n Stacktrace: %s", k+1, v.Level, v.Function, v.StackTrace)
 	}
 }
+
+func CreateAccount(username, email, password string) {
+	client := jrpc.NewClient(serverEndpoint)
+	var accountResp User
+	account := User{Username: username, Email: email, Password: password}
+	resp, err := client.Call(context.Background(), "users.create", &account)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = resp.GetObject(&accountResp) // expects a rpc-object result value like: {"id": 123, "name": "alex", "age": 33}
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	consoleAccounts(accountResp)
+}
+
+func Login(email, password string) {
+	client := jrpc.NewClient(serverEndpoint)
+	var loginResp LoginResponse
+	resp, err := client.Call(context.Background(), "users.login", &LoginUser{Email: email, Password: password})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = resp.GetObject(&loginResp) // expects a rpc-object result value like: {"id": 123, "name": "alex", "age": 33}
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	consoleAccountsLogin(loginResp)
+}
+
+/*
+func Details(token string) {
+	client := jrpc.NewClient(serverEndpoint)
+
+	resp, err := client.Call(context.Background(), "users.")
+}
+*/

@@ -1,6 +1,11 @@
 package service
 
-import "time"
+import (
+	"log"
+	"time"
+
+	"github.com/TwiN/go-color"
+)
 
 type LogRecord struct {
 	Id         int       `json:"id"`
@@ -37,4 +42,36 @@ type RecordLevel struct {
 type XRecords struct {
 	Tokenid string `json:"token"`
 	Minutes int    `json:"minutes"`
+}
+
+type User struct {
+	Id       int       `json:"id"`
+	Username string    `json:"username"`
+	Email    string    `json:"email"`
+	Password string    `json:"password"`
+	Created  time.Time `json:"created"`
+}
+
+type LoginUser struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+type LoginResponse struct {
+	User  User
+	Token string
+}
+
+func consoleLogs(records []LogRecord) {
+	for _, v := range records {
+		log.Println(color.Colorize(color.Cyan, v.Message))
+	}
+	return
+}
+
+func consoleAccounts(user User) {
+	println(color.Purple, user.Id, user.Username, user.Email)
+}
+
+func consoleAccountsLogin(resp LoginResponse) {
+	println(color.Purple, resp.User.Id, resp.User.Email, resp.User.Username, resp.Token)
 }

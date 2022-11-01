@@ -1,6 +1,9 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/salemzii/swing-cli/service"
+	"github.com/spf13/cobra"
+)
 
 func init() {
 	accountsCmd.AddCommand(create, login, details)
@@ -20,7 +23,7 @@ var (
 		Long:  `signup allow you to sign up for an account on swing, with your username, email and password`,
 		Args:  cobra.ExactArgs(3),
 		Run: func(cmd *cobra.Command, args []string) {
-			// service.CreateAccount(args)
+			service.CreateAccount(args[0], args[1], args[2])
 		},
 	}
 
@@ -30,7 +33,7 @@ var (
 		Long:  `login allows you log into your swing account, with your email and password`,
 		Args:  cobra.ExactArgs(2),
 		Run: func(cmd *cobra.Command, args []string) {
-			// service.Login(args)
+			service.Login(args[0], args[1])
 		},
 	}
 
@@ -38,8 +41,9 @@ var (
 		Use:   "info",
 		Short: "get more information about an account",
 		Long:  `get detailed information about a logged in account like tokens details, account creation date, number of records logged etc`,
+		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			//service.Details()
+			//service.Details(args[0])
 		},
 	}
 )
