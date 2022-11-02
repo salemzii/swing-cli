@@ -155,17 +155,21 @@ func WriteToken(token string) bool {
 		return false
 	}
 	appendToken := fmt.Sprintf("TOKEN=%s", token)
-	swingEnvFile := home + "swing.env"
-	file, err := os.OpenFile(swingEnvFile, os.O_APPEND|os.O_WRONLY|os.O_CREATE, os.ModeAppend)
+	swingEnvFile := home + "/swing.env"
+	log.Println(swingEnvFile)
+	file, err := os.OpenFile(swingEnvFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal("Unable to open swing.env")
 		return false
 	}
+	defer file.Close()
+
 	lineWritten, err := file.Write([]byte(appendToken))
 	if err != nil {
 		log.Fatal("Unable to write token to swing.env")
 		return false
 	}
+
 	if lineWritten == 0 {
 		log.Fatal("token write was unsuccesful")
 		return false

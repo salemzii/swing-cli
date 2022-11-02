@@ -40,7 +40,14 @@ func initConfig() {
 		fmt.Println("Can't read config:", err)
 		println(color.Colorize(color.Red, "Unable to retrieve your token at the moment; try signing in"))
 	}
-	Swingtoken = viper.Get("TOKEN").(string)
+
+	tkIntf := viper.Get("TOKEN")
+	if tkIntf == nil {
+		println(color.Colorize(color.Red, "Unable to retrieve your token at the moment; try signing in. Token is nil"))
+		return
+	} else {
+		Swingtoken = tkIntf.(string)
+	}
 }
 
 var rootCmd = &cobra.Command{
