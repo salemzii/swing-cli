@@ -18,7 +18,7 @@ var accountsCmd = &cobra.Command{
 
 var (
 	create = &cobra.Command{
-		Use:   "signup",
+		Use:   "create",
 		Short: "signup an account on swing",
 		Long:  `signup allow you to sign up for an account on swing, with your username, email and password`,
 		Args:  cobra.ExactArgs(3),

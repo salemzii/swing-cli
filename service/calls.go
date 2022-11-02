@@ -2,8 +2,12 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"os"
 
+	"github.com/badoux/checkmail"
+	"github.com/mitchellh/go-homedir"
 	jrpc "github.com/ybbus/jsonrpc/v3"
 )
 
@@ -12,6 +16,7 @@ var (
 )
 
 func allRecords(token string) {
+	log.Println(token)
 	client := jrpc.NewClient(serverEndpoint)
 	var records []LogRecord
 	resp, err := client.Call(context.Background(), "records.all", &AllRecordStruct{Tokenid: token, Limit: 500})
@@ -40,9 +45,7 @@ func GetRecordsWithLineNum(token string, line int) {
 		log.Fatal(err)
 	}
 
-	for k, v := range records {
-		log.Printf("Record %d, \n Level: %s, \n FunctionName: %s, \n Stacktrace: %s", k+1, v.Level, v.Function, v.StackTrace)
-	}
+	consoleLogs(records)
 }
 
 func GetRecordsWithFunction(token string, function string) {
@@ -58,10 +61,7 @@ func GetRecordsWithFunction(token string, function string) {
 	if err != nil || len(records) < 1 {
 		log.Fatal(err)
 	}
-
-	for k, v := range records {
-		log.Printf("Record %d, \n Level: %s, \n FunctionName: %s, \n Stacktrace: %s", k+1, v.Level, v.Function, v.StackTrace)
-	}
+	consoleLogs(records)
 }
 
 func GetRecordsWithLogLevel(token string, level string) {
@@ -78,9 +78,7 @@ func GetRecordsWithLogLevel(token string, level string) {
 		log.Fatal(err)
 	}
 
-	for k, v := range records {
-		log.Printf("Record %d, \n Level: %s, \n FunctionName: %s, \n Stacktrace: %s", k+1, v.Level, v.Function, v.StackTrace)
-	}
+	consoleLogs(records)
 }
 
 func GetRecordsLast15(token string) {
@@ -97,9 +95,7 @@ func GetRecordsLast15(token string) {
 		log.Fatal(err)
 	}
 
-	for k, v := range records {
-		log.Printf("Record %d, \n Level: %s, \n FunctionName: %s, \n Stacktrace: %s", k+1, v.Level, v.Function, v.StackTrace)
-	}
+	consoleLogs(records)
 }
 
 func GetRecordsLastX(token string, minutes int) {
@@ -116,14 +112,26 @@ func GetRecordsLastX(token string, minutes int) {
 		log.Fatal(err)
 	}
 
-	for k, v := range records {
-		log.Printf("Record %d, \n Level: %s, \n FunctionName: %s, \n Stacktrace: %s", k+1, v.Level, v.Function, v.StackTrace)
+	consoleLogs(records)
+}
+
+func ValidateMail(email string) error {
+	err := checkmail.ValidateFormat(email)
+	if err != nil {
+		return err
 	}
+
+	return nil
 }
 
 func CreateAccount(username, email, password string) {
+
+	if err := ValidateMail(email); err != nil {
+		consoleInvalidMailError(err)
+		return
+	}
 	client := jrpc.NewClient(serverEndpoint)
-	var accountResp User
+	var accountResp LoginResponse
 	account := User{Username: username, Email: email, Password: password}
 	resp, err := client.Call(context.Background(), "users.create", &account)
 	if err != nil {
@@ -134,8 +142,35 @@ func CreateAccount(username, email, password string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	if !WriteToken(accountResp.Token) {
+		log.Fatal("Token storage unsuccessful!")
+	}
 	consoleAccounts(accountResp)
+}
+
+func WriteToken(token string) bool {
+	home, err := homedir.Dir()
+	if err != nil {
+		log.Fatal("Unable to find home directory")
+		return false
+	}
+	appendToken := fmt.Sprintf("TOKEN=%s", token)
+	swingEnvFile := home + "swing.env"
+	file, err := os.OpenFile(swingEnvFile, os.O_APPEND|os.O_WRONLY|os.O_CREATE, os.ModeAppend)
+	if err != nil {
+		log.Fatal("Unable to open swing.env")
+		return false
+	}
+	lineWritten, err := file.Write([]byte(appendToken))
+	if err != nil {
+		log.Fatal("Unable to write token to swing.env")
+		return false
+	}
+	if lineWritten == 0 {
+		log.Fatal("token write was unsuccesful")
+		return false
+	}
+	return true
 }
 
 func Login(email, password string) {
@@ -151,13 +186,5 @@ func Login(email, password string) {
 		log.Fatal(err)
 	}
 
-	consoleAccountsLogin(loginResp)
+	consoleAccounts(loginResp)
 }
-
-/*
-func Details(token string) {
-	client := jrpc.NewClient(serverEndpoint)
-
-	resp, err := client.Call(context.Background(), "users.")
-}
-*/

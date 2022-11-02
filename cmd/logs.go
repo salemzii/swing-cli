@@ -31,9 +31,9 @@ var (
 		Use:   "all",
 		Short: "fetch all log records",
 		Long:  `all command allows you to fetch all your log records`,
-		Args:  cobra.ExactArgs(1),
+		//Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			service.GetAllRecords(args[0])
+			service.GetAllRecords(Swingtoken)
 		},
 	}
 

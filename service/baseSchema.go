@@ -1,7 +1,8 @@
 package service
 
 import (
-	"log"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/TwiN/go-color"
@@ -62,16 +63,37 @@ type LoginResponse struct {
 }
 
 func consoleLogs(records []LogRecord) {
+
 	for _, v := range records {
-		log.Println(color.Colorize(color.Cyan, v.Message))
+		time.Sleep(30 * time.Millisecond)
+
+		switch strings.ToLower(v.Level) {
+		case "debug":
+			println(color.Colorize(color.Cyan, v.Created.String()), color.InGray(v.Function), color.Colorize(color.Blue, v.Message),
+				color.Colorize(color.Cyan, v.Level), color.Colorize(color.Purple, v.StackTrace), color.Colorize(color.Black, v.Logger))
+		case "info":
+			println(color.Colorize(color.Cyan, v.Created.String()), color.InGray(v.Function), color.Colorize(color.Blue, v.Message),
+				color.Colorize(color.Green, v.Level), color.Colorize(color.Purple, v.StackTrace), color.Colorize(color.Black, v.Logger))
+		case "critical":
+			println(color.Colorize(color.Cyan, v.Created.String()), color.InGray(v.Function), color.Colorize(color.Blue, v.Message),
+				color.Colorize(color.Yellow, v.Level), color.Colorize(color.Purple, v.StackTrace), color.Colorize(color.Black, v.Logger))
+		case "warning":
+			println(color.Colorize(color.Cyan, v.Created.String()), color.InGray(v.Function), color.Colorize(color.Blue, v.Message),
+				fmt.Sprintf("\033[38;5;214m %s", v.Level), color.Colorize(color.Purple, v.StackTrace), color.Colorize(color.Black, v.Logger))
+		case "error":
+			println(color.Colorize(color.Cyan, v.Created.String()), color.InGray(v.Function), color.Colorize(color.Blue, v.Message),
+				color.Colorize(color.Red, v.Level), color.Colorize(color.Purple, v.StackTrace), color.Colorize(color.Black, v.Logger))
+		}
 	}
 	return
 }
 
-func consoleAccounts(user User) {
-	println(color.Purple, user.Id, user.Username, user.Email)
+func consoleAccounts(resp LoginResponse) {
+	println(color.Colorize(color.Cyan, " Username: "+resp.User.Username+"\n"),
+		color.Colorize(color.Blue, "Email: "+resp.User.Email+"\n"),
+		color.InPurple("Token: "+resp.Token))
 }
 
-func consoleAccountsLogin(resp LoginResponse) {
-	println(color.Purple, resp.User.Id, resp.User.Email, resp.User.Username, resp.Token)
+func consoleInvalidMailError(e error) {
+	println(color.Red, "encountered error validating your mail: ", e.Error())
 }
