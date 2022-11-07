@@ -1,12 +1,17 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"strings"
 	"time"
 
 	"github.com/TwiN/go-color"
 )
+
+var Tojson bool
+var Tail bool
 
 type LogRecord struct {
 	Id         int       `json:"id"`
@@ -83,6 +88,52 @@ func consoleLogs(records []LogRecord) {
 		case "error":
 			println(color.Colorize(color.Cyan, v.Created.String()), color.InGray(v.Function), color.Colorize(color.Blue, v.Message),
 				color.Colorize(color.Red, v.Level), color.Colorize(color.Purple, v.StackTrace), color.Colorize(color.Black, v.Logger))
+		}
+	}
+	return
+}
+
+func consoleLogsJson(records []LogRecord) {
+
+	for _, v := range records {
+		time.Sleep(30 * time.Millisecond)
+
+		switch strings.ToLower(v.Level) {
+		case "debug":
+			b, err := json.MarshalIndent(v, "", "  ")
+			if err != nil {
+				log.Fatalf("Error Pretty Printing %v", err)
+			}
+			println(color.Colorize(color.Cyan, string(b)))
+
+		case "info":
+			b, err := json.MarshalIndent(v, "", "  ")
+			if err != nil {
+				log.Fatalf("Error Pretty Printing %v", err)
+			}
+			println(color.Colorize(color.Green, string(b)))
+
+		case "critical":
+			b, err := json.MarshalIndent(v, "", "  ")
+			if err != nil {
+				log.Fatalf("Error Pretty Printing %v", err)
+			}
+			println(color.Colorize(color.Yellow, string(b)))
+
+		case "warning":
+			b, err := json.MarshalIndent(v, "", "  ")
+			if err != nil {
+				log.Fatalf("Error Pretty Printing %v", err)
+			}
+			fmt.Sprintf("\033[38;5;214m %s", string(b))
+
+		case "error":
+			b, err := json.MarshalIndent(v, "", "  ")
+			if err != nil {
+				log.Fatalf("Error Pretty Printing %v", err)
+			}
+			println(color.Colorize(color.Red, string(b)))
+
 		}
 	}
 	return

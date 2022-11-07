@@ -13,7 +13,6 @@ func init() {
 	logsCmd.AddCommand(allCmd, lineCmd, lastXminCmd, last15MinCmd, levelCmd, functionCmd)
 	logsCmd.PersistentFlags().Bool("json", false, "return response in json format")
 	allCmd.PersistentFlags().Bool("tail", false, "maintain an open connection for all newly created logs")
-
 }
 
 var logsCmd = &cobra.Command{
@@ -22,7 +21,7 @@ var logsCmd = &cobra.Command{
 	Long: `logs provides an array of operations that you can use to analyze your logs data,
 		if no sub command follows, it returns the all command by default`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// if no command is specified after "logs", run logs.all
+		// if no command is specified after "logs",run logs.all
 	},
 }
 
@@ -33,6 +32,13 @@ var (
 		Long:  `all command allows you to fetch all your log records`,
 		//Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
+			val, err := logsCmd.Flags().GetBool("json")
+			if err != nil {
+				log.Printf("error parsing flags %v", err)
+			}
+			if val == true {
+				service.Tojson = true
+			}
 			service.GetAllRecords(Swingtoken)
 		},
 	}
@@ -47,6 +53,13 @@ var (
 			if err != nil {
 				log.Fatalf("Error retrieving line number %v", err)
 			}
+			val, err := logsCmd.Flags().GetBool("json")
+			if err != nil {
+				log.Printf("error parsing flags %v", err)
+			}
+			if val == true {
+				service.Tojson = true
+			}
 			service.GetRecordsWithLineNum(Swingtoken, lineNum)
 		},
 	}
@@ -57,7 +70,13 @@ var (
 		Long:  "the function command allows you fetch all log records containing the specified function name",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-
+			val, err := logsCmd.Flags().GetBool("json")
+			if err != nil {
+				log.Printf("error parsing flags %v", err)
+			}
+			if val == true {
+				service.Tojson = true
+			}
 			service.GetRecordsWithFunction(Swingtoken, args[0])
 		},
 	}
@@ -68,6 +87,13 @@ var (
 		Long:  "the level command allows you fetch all log records containing the specified log level",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
+			val, err := logsCmd.Flags().GetBool("json")
+			if err != nil {
+				log.Printf("error parsing flags %v", err)
+			}
+			if val == true {
+				service.Tojson = true
+			}
 			service.GetRecordsWithLogLevel(Swingtoken, args[0])
 		},
 	}
@@ -78,6 +104,13 @@ var (
 		Long:  "the last15 command allows you fetch all log records that were ingested within the last 15 minutes",
 		//Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
+			val, err := logsCmd.Flags().GetBool("json")
+			if err != nil {
+				log.Printf("error parsing flags %v", err)
+			}
+			if val == true {
+				service.Tojson = true
+			}
 			service.GetRecordsLast15(Swingtoken)
 		},
 	}
@@ -91,6 +124,13 @@ var (
 			lineNum, err := strconv.Atoi(args[0])
 			if err != nil {
 				log.Fatalf("Error retrieving line number %v", err)
+			}
+			val, err := logsCmd.Flags().GetBool("json")
+			if err != nil {
+				log.Printf("error parsing flags %v", err)
+			}
+			if val == true {
+				service.Tojson = true
 			}
 			service.GetRecordsLastX(Swingtoken, lineNum)
 		},

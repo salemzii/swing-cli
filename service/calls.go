@@ -22,10 +22,16 @@ func allRecords(token string) {
 		handleFailedCalls(err)
 	}
 
-	err = resp.GetObject(&records) // expects a rpc-object result value like: {"id": 123, "name": "alex", "age": 33}
+	err = resp.GetObject(&records)
 	if err != nil || len(records) < 1 {
 		log.Fatal(err)
 	}
+
+	if Tojson == true {
+		consoleLogsJson(records)
+		return
+	}
+
 	consoleLogs(records)
 }
 
@@ -43,6 +49,11 @@ func GetRecordsWithLineNum(token string, line int) {
 		log.Fatal(err)
 	}
 
+	if Tojson == true {
+		consoleLogsJson(records)
+		return
+	}
+
 	consoleLogs(records)
 }
 
@@ -55,10 +66,16 @@ func GetRecordsWithFunction(token string, function string) {
 		handleFailedCalls(err)
 	}
 
-	err = resp.GetObject(&records) // expects a rpc-object result value like: {"id": 123, "name": "alex", "age": 33}
+	err = resp.GetObject(&records)
 	if err != nil || len(records) < 1 {
 		log.Fatal(err)
 	}
+
+	if Tojson == true {
+		consoleLogsJson(records)
+		return
+	}
+
 	consoleLogs(records)
 }
 
@@ -71,11 +88,14 @@ func GetRecordsWithLogLevel(token string, level string) {
 		handleFailedCalls(err)
 	}
 
-	err = resp.GetObject(&records) // expects a rpc-object result value like: {"id": 123, "name": "alex", "age": 33}
+	err = resp.GetObject(&records)
 	if err != nil || len(records) < 1 {
 		log.Fatal(err)
 	}
-
+	if Tojson == true {
+		consoleLogsJson(records)
+		return
+	}
 	consoleLogs(records)
 }
 
@@ -88,11 +108,15 @@ func GetRecordsLast15(token string) {
 		handleFailedCalls(err)
 	}
 
-	err = resp.GetObject(&records) // expects a rpc-object result value like: {"id": 123, "name": "alex", "age": 33}
+	err = resp.GetObject(&records)
 	if err != nil || len(records) < 1 {
 		log.Fatal(err)
 	}
 
+	if Tojson == true {
+		consoleLogsJson(records)
+		return
+	}
 	consoleLogs(records)
 }
 
@@ -105,9 +129,14 @@ func GetRecordsLastX(token string, minutes int) {
 		handleFailedCalls(err)
 	}
 
-	err = resp.GetObject(&records) // expects a rpc-object result value like: {"id": 123, "name": "alex", "age": 33}
+	err = resp.GetObject(&records)
 	if err != nil || len(records) < 1 {
 		log.Fatal(err)
+	}
+
+	if Tojson == true {
+		consoleLogsJson(records)
+		return
 	}
 
 	consoleLogs(records)
@@ -136,13 +165,14 @@ func CreateAccount(username, email, password string) {
 		handleFailedCalls(err)
 	}
 
-	err = resp.GetObject(&accountResp) // expects a rpc-object result value like: {"id": 123, "name": "alex", "age": 33}
+	err = resp.GetObject(&accountResp)
 	if err != nil {
 		log.Fatal(err)
 	}
 	if !WriteToken(accountResp.Token) {
 		log.Fatal("Token storage unsuccessful!")
 	}
+
 	consoleAccounts(accountResp)
 }
 
@@ -154,7 +184,7 @@ func Login(email, password string) {
 		handleFailedCalls(err)
 	}
 
-	err = resp.GetObject(&loginResp) // expects a rpc-object result value like: {"id": 123, "name": "alex", "age": 33}
+	err = resp.GetObject(&loginResp)
 	if err != nil {
 		log.Fatal(err)
 	}

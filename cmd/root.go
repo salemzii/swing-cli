@@ -37,7 +37,7 @@ func initConfig() {
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("Can't read config:", err)
+		//fmt.Println("Can't read config:", err)
 		println(color.Colorize(color.Red, "Unable to retrieve your token at the moment; try signing in"))
 	}
 
