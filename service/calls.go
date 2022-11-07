@@ -36,7 +36,7 @@ func allRecords(token string) {
 }
 
 func GetRecordsWithLineNum(token string, line int) {
-	client := jrpc.NewClient(serverEndpoint)
+	client := jrpc.NewClient(publicserverEndpoint)
 	var records []LogRecord
 	resp, err := client.Call(context.Background(), "records.lineno", &RecordLineNum{Tokenid: token, Line: line, Limit: 500})
 
@@ -58,7 +58,7 @@ func GetRecordsWithLineNum(token string, line int) {
 }
 
 func GetRecordsWithFunction(token string, function string) {
-	client := jrpc.NewClient(serverEndpoint)
+	client := jrpc.NewClient(publicserverEndpoint)
 	var records []LogRecord
 	resp, err := client.Call(context.Background(), "records.function", &RecordFunction{Tokenid: token, Function: function})
 
@@ -80,7 +80,7 @@ func GetRecordsWithFunction(token string, function string) {
 }
 
 func GetRecordsWithLogLevel(token string, level string) {
-	client := jrpc.NewClient(serverEndpoint)
+	client := jrpc.NewClient(publicserverEndpoint)
 	var records []LogRecord
 	resp, err := client.Call(context.Background(), "records.level", &RecordLevel{Tokenid: token, Level: level})
 
@@ -100,7 +100,7 @@ func GetRecordsWithLogLevel(token string, level string) {
 }
 
 func GetRecordsLast15(token string) {
-	client := jrpc.NewClient(serverEndpoint)
+	client := jrpc.NewClient(publicserverEndpoint)
 	var records []LogRecord
 	resp, err := client.Call(context.Background(), "records.duration.15", &XRecords{Tokenid: token, Minutes: 15})
 
@@ -121,7 +121,7 @@ func GetRecordsLast15(token string) {
 }
 
 func GetRecordsLastX(token string, minutes int) {
-	client := jrpc.NewClient(serverEndpoint)
+	client := jrpc.NewClient(publicserverEndpoint)
 	var records []LogRecord
 	resp, err := client.Call(context.Background(), "records.duration.x", &XRecords{Tokenid: token, Minutes: minutes})
 
@@ -157,7 +157,7 @@ func CreateAccount(username, email, password string) {
 		consoleInvalidMailError(err)
 		return
 	}
-	client := jrpc.NewClient(serverEndpoint)
+	client := jrpc.NewClient(publicserverEndpoint)
 	var accountResp LoginResponse
 	account := User{Username: username, Email: email, Password: password}
 	resp, err := client.Call(context.Background(), "users.create", &account)
@@ -177,7 +177,7 @@ func CreateAccount(username, email, password string) {
 }
 
 func Login(email, password string) {
-	client := jrpc.NewClient(serverEndpoint)
+	client := jrpc.NewClient(publicserverEndpoint)
 	var loginResp LoginResponse
 	resp, err := client.Call(context.Background(), "users.login", &LoginUser{Email: email, Password: password})
 	if err != nil {
